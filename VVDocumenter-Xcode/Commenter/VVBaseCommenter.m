@@ -68,15 +68,28 @@
             [authorCotent appendString:[formatter stringFromDate:[NSDate date]]];            
         }
 
-        authorInfo = [NSString stringWithFormat:@"%@@author %@\n%@\n", self.prefixString, authorCotent, self.prefixString];
+
+        authorInfo = [NSString stringWithFormat:@"%@\n%@@author %@\n", self.prefixString, self.prefixString, authorCotent];
+        
     }
     
-    if ([[VVDocumenterSetting defaultSetting] useHeaderDoc]) {
-        return [NSString stringWithFormat:@"%@/*!\n%@%@%@<#Description#>\n", self.indent, authorInfo, self.prefixString, descriptionTag];
-    } else if ([[VVDocumenterSetting defaultSetting] prefixWithSlashes]) {
-        return [NSString stringWithFormat:@"%@%@%@<#Description#>\n", self.prefixString, authorInfo, descriptionTag];
-    } else {
-        return [NSString stringWithFormat:@"%@/**\n%@%@%@<#Description#>\n", self.indent, authorInfo, self.prefixString, descriptionTag];
+    //马华健-修改于141225,修复添加@author会导致注释显示出错的bug
+    {
+        //原来的代码
+        //        if ([[VVDocumenterSetting defaultSetting] useHeaderDoc]) {
+        //            return [NSString stringWithFormat:@"%@/*!\n%@%@%@<#Description#>\n", self.indent, authorInfo, self.prefixString, descriptionTag];
+        //        } else if ([[VVDocumenterSetting defaultSetting] prefixWithSlashes]) {
+        //            return [NSString stringWithFormat:@"%@%@%@<#Description#>\n", self.prefixString, authorInfo, descriptionTag];
+        //        } else {
+        //            return [NSString stringWithFormat:@"%@/**\n%@%@%@<#Description#>\n", self.indent, authorInfo, self.prefixString, descriptionTag];
+        //        }
+        if ([[VVDocumenterSetting defaultSetting] useHeaderDoc]) {
+            return [NSString stringWithFormat:@"%@/*!\n%@%@<#Description#>\n%@", self.indent, self.prefixString, descriptionTag, authorInfo];
+        } else if ([[VVDocumenterSetting defaultSetting] prefixWithSlashes]) {
+            return [NSString stringWithFormat:@"%@%@<#Description#>\n%@", self.prefixString, descriptionTag, authorInfo];
+        } else {
+            return [NSString stringWithFormat:@"%@/**\n%@%@<#Description#>\n%@", self.indent, self.prefixString, descriptionTag, authorInfo];
+        }
     }
 }
 
